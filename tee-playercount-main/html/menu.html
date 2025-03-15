@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player List</title>
+    <link rel="stylesheet" href="menu.css">
+</head>
+<body>
+    <div class="player-list" id="playerList">
+        <img src="logo.png" class="server-logo" alt="Server Logo">
+        <h2>Players</h2>
+        <div id="players"></div>
+        <button class="close-btn" onclick="closeMenu()">Close</button>
+    </div>
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data.action === 'open') {
+                document.getElementById('players').innerHTML = '';
+                event.data.players.forEach(function(player) {
+                    let playerDiv = document.createElement('div');
+                    playerDiv.className = 'player';
+                    playerDiv.textContent = player.id + ' - ' + player.name;
+                    document.getElementById('players').appendChild(playerDiv);
+                });
+                document.body.style.display = 'flex';
+            } else if (event.data.action === 'update') {
+                document.getElementById('players').innerHTML = '';
+                event.data.players.forEach(function(player) {
+                    let playerDiv = document.createElement('div');
+                    playerDiv.className = 'player';
+                    playerDiv.textContent = player.id + ' - ' + player.name;
+                    document.getElementById('players').appendChild(playerDiv);
+                });
+            }
+        });
+
+        function closeMenu() {
+            fetch(`https://${GetParentResourceName()}/close`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            }).then(() => {
+                document.body.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
